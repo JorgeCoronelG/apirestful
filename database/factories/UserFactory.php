@@ -4,8 +4,15 @@ namespace Database\Factories;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
+/**
+ * Class UserFactory
+ *
+ * @author JorgeCoronelG
+ * @version 1.0
+ * @package Database\Factories
+ * Created 27/09/2020
+ */
 class UserFactory extends Factory
 {
     /**
@@ -23,11 +30,21 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name,
             'email' => $this->faker->unique()->safeEmail,
-            'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'remember_token' => Str::random(10),
+            'password' => bcrypt('secret'),
+            'role' => $this->faker->randomElement([
+                User::USUARIO_SUPER_ADMINISTRADOR,
+                User::USUARIO_ADMINISTRADOR,
+                User::USUARIO_RESPONSABLE_EQUIPO,
+                User::USUARIO_JUGADOR,
+                User::USUARIO_ARBITRO,
+                ]),
+            'verified' => $verificado = $this->faker->randomElement([
+                User::USUARIO_VERIFICADO,
+                User::USUARIO_NO_VERIFICADO,
+                ]),
+            'verification_token' => $verificado == User::USUARIO_VERIFICADO ? null : User::generarTokenVerificacion(),
+            'email_verified_at' => $verificado == User::USUARIO_VERIFICADO ? now() : null,
         ];
     }
 }
