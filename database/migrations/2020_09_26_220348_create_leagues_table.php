@@ -24,7 +24,7 @@ class CreateLeaguesTable extends Migration
             $table->id();
             $table->string('name', '120');
             $table->foreignId('user_id')
-                ->constrained('users')
+                ->constrained()
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
             $table->timestamps();
