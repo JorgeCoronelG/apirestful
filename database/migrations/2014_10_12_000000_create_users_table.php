@@ -26,7 +26,7 @@ class CreateUsersTable extends Migration
             $table->string('email', 120)->unique();
             $table->string('password');
             $table->tinyInteger('role');
-            $table->tinyInteger('verified')->default(User::USUARIO_NO_VERIFICADO);
+            $table->boolean('verified')->default(User::USUARIO_NO_VERIFICADO);
             $table->string('verification_token', '40')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamps();
