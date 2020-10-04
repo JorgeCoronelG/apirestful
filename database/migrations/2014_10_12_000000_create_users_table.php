@@ -25,9 +25,10 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('email', 120)->unique();
             $table->string('password');
+            $table->string('api_token', User::TOKEN_LENGTH)->nullable()->unique()->default(null);
             $table->tinyInteger('role');
             $table->boolean('verified')->default(User::USUARIO_NO_VERIFICADO);
-            $table->string('verification_token', '40')->nullable();
+            $table->string('verification_token', User::TOKEN_LENGTH)->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
