@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * Class UserFactory
@@ -31,7 +32,7 @@ class UserFactory extends Factory
     {
         return [
             'email' => $this->faker->unique()->safeEmail,
-            'password' => bcrypt('secret'),
+            'password' => Hash::make('password'),
             'role' => $this->faker->randomElement([
                 User::USUARIO_SUPER_ADMINISTRADOR,
                 User::USUARIO_ADMINISTRADOR,
@@ -43,7 +44,7 @@ class UserFactory extends Factory
                 User::USUARIO_VERIFICADO,
                 User::USUARIO_NO_VERIFICADO,
                 ]),
-            'verification_token' => $verificado == User::USUARIO_VERIFICADO ? null : User::generarTokenVerificacion(),
+            'verification_token' => $verificado == User::USUARIO_VERIFICADO ? null : User::generarToken(User::TOKEN_LENGTH),
             'email_verified_at' => $verificado == User::USUARIO_VERIFICADO ? now() : null,
         ];
     }
