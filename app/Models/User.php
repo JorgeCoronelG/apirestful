@@ -27,31 +27,14 @@ class User extends Authenticatable
     const USUARIO_RESPONSABLE_EQUIPO = 3;
     const USUARIO_JUGADOR = 4;
     const USUARIO_ARBITRO = 5;
+    const TOKEN_LENGTH = 150;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['email', 'password', 'role', 'verified', 'verification_token', 'email_verified_at'];
-
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password', 'remember_token', 'verification_token'
-    ];
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    protected $fillable = ['email', 'password', 'role', 'verification_token'];
 
     /**
      * Función que regresa si el usuario está verificado o no
@@ -64,22 +47,34 @@ class User extends Authenticatable
     }
 
     /**
-     * Función para generar el token de verificación
+     * Función para generar un token
      *
-     * @return string token de 40 caracteres
+     * @param Int $length
+     * @return string
      */
-    public static function generarTokenVerificacion()
+    public static function generarToken(Int $length)
     {
-        return Str::random(40);
+        return Str::random($length);
     }
 
     /**
-     * Obtiene el usuario propietario de la liga
+     * Obtiene la liga relacionada al usuario
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function league()
     {
-        return $this->belongsTo(League::class);
+        return $this->hasOne(League::class);
+    }
+
+    /**
+     * Obtener un usuario por su correo
+     *
+     * @param String $email
+     * @return mixed
+     */
+    public static function findByEmail(String $email)
+    {
+         return User::where('email', $email)->first();
     }
 }
