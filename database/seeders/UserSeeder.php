@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * Class UserSeeder
@@ -24,6 +25,17 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
+        // Se crea un usuario SUPER-ADMINISTRADOR
+        $user = User::create([
+            'email' => 'tprog.jorge.coronel@outlook.com',
+            'password' => Hash::make('password'),
+            'role' => User::USUARIO_SUPER_ADMINISTRADOR,
+            'verification_token' => null,
+            'verified' => User::USUARIO_VERIFICADO,
+            'email_verified_at' => now()
+            // 'api_token' => Str::random(User::TOKEN_LENGTH)
+        ]);
+
         User::factory()->count(self::CANTIDAD_USUARIOS)->create();
     }
 }
