@@ -26,12 +26,12 @@ class League extends Model
     protected $fillable = ['name', 'user_id'];
 
     /**
-     * Obtiene el registro asociado con el usuario
+     * Obtiene el usuario relacionado a la liga
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class);
     }
 }
