@@ -25,8 +25,10 @@ class UserLeagueSeeder extends Seeder
      */
     public function run()
     {
-        User::factory()->times(self::CANTIDAD_USUARIOS)->create()->each(function (User $user) {
-            League::factory()->create(['user_id' => $user->id]);
-        });
+        User::factory()->times(self::CANTIDAD_USUARIOS)
+            ->create(['role' => User::USUARIO_ADMINISTRADOR])
+            ->each(function (User $user) {
+                League::factory()->create(['user_id' => $user->id]);
+            });
     }
 }
