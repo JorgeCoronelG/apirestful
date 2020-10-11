@@ -16,8 +16,6 @@ use Illuminate\Support\Facades\Hash;
  */
 class UserSeeder extends Seeder
 {
-    const CANTIDAD_USUARIOS = 100;
-
     /**
      * Run the database seeds.
      *
@@ -26,7 +24,7 @@ class UserSeeder extends Seeder
     public function run()
     {
         // Se crea un usuario SUPER-ADMINISTRADOR
-        $user = User::create([
+        User::create([
             'email' => 'tprog.jorge.coronel@outlook.com',
             'password' => Hash::make('password'),
             'role' => User::USUARIO_SUPER_ADMINISTRADOR,
@@ -35,7 +33,5 @@ class UserSeeder extends Seeder
             'email_verified_at' => now()
             // 'api_token' => Str::random(User::TOKEN_LENGTH)
         ]);
-
-        User::factory()->count(self::CANTIDAD_USUARIOS)->create();
     }
 }

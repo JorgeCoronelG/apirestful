@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\League;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -30,10 +29,8 @@ class LeagueFactory extends Factory
      */
     public function definition()
     {
-        $users = User::all();
         return [
-            'name' => $this->faker->name(),
-            'user_id' => $users->random()->id,
+            'name' => $this->faker->name()
         ];
     }
 }
