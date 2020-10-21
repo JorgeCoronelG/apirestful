@@ -33,7 +33,7 @@ class LoginService
     }
 
     /**
-     * Función para verificar si existe el usuario y si la contraseña es igual
+     * Función para verificar si existe el usuario, si la contraseña es igual y si está verificado
      *
      * @param String $email
      * @param String $password
@@ -44,7 +44,9 @@ class LoginService
         $user = User::findByEmail($email);
         if ($user) {
             if (Hash::check($password, $user->password)) {
-                return $user;
+                if ($user->esVerificado()) {
+                    return $user;
+                }
             }
         }
         return null;

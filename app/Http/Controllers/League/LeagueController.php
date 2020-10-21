@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\League;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use App\Http\Requests\League\StoreLeagueRequest;
 use App\Http\Requests\League\UpdateLeagueRequest;
 use App\Http\Resources\League\LeagueCollection;
@@ -18,7 +18,7 @@ use App\Models\League;
  * @package App\Http\Controllers\League
  * Created 03/10/2020
  */
-class LeagueController extends Controller
+class LeagueController extends ApiController
 {
     protected $league;
     private $leagueService;
@@ -34,7 +34,6 @@ class LeagueController extends Controller
         $this->leagueService = new LeagueService();
     }
 
-
     /**
      * Display a listing of the resource.
      *
@@ -42,7 +41,7 @@ class LeagueController extends Controller
      */
     public function index()
     {
-        return response()->json(new LeagueCollection($this->league->get()));
+        return $this->showAll(new LeagueCollection($this->league->get()));
     }
 
     /**
@@ -53,8 +52,8 @@ class LeagueController extends Controller
      */
     public function store(StoreLeagueRequest $request)
     {
-        $this->leagueService->storeLeague($request->all());
-        return response()->json(null, 201);
+        $league = $this->leagueService->storeLeague($request->validated());
+        return $this->showOne(new LeagueResource($league), 201);
     }
 
     /**
@@ -65,7 +64,7 @@ class LeagueController extends Controller
      */
     public function show(League $league)
     {
-        return response()->json(new LeagueResource($league));
+        return $this->showOne(new LeagueResource($league));
     }
 
     /**
@@ -76,8 +75,8 @@ class LeagueController extends Controller
      */
     public function update(UpdateLeagueRequest $request, League $league)
     {
-        $league->update($request->all());
-        return response()->json(new LeagueResource($league), 201);
+        $league->saveOrFail($request->validated());
+        return $this->showOne(new LeagueResource($league));
     }
 
     /**
@@ -89,6 +88,6 @@ class LeagueController extends Controller
     public function destroy(League $league)
     {
         $this->leagueService->deleteLeague($league);
-        return response()->json(null, 204);
+        return $this->noContentResponse();
     }
 }

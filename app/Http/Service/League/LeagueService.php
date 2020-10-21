@@ -21,21 +21,30 @@ class LeagueService
      * Función para insertar una liga con su usuario
      *
      * @param $data
+     * @return mixed
      */
     public function storeLeague($data)
     {
-        DB::transaction(function () use ($data) {
+        DB::beginTransaction();
+        try {
             $user = User::create([
                 'email' => $data['email'],
-                'password' => Hash::make('secret'),
+                'password' => Hash::make('password'),
                 'role' => User::USUARIO_ADMINISTRADOR,
                 'verification_token' => User::generarToken(User::TOKEN_LENGTH)
             ]);
-
-            $user->league()->create([
-                'name' => $data['name']
-            ]);
-        });
+            if ($user) {
+                $league = $user->league()->create([
+                    'name' => $data['name']
+                ]);
+                if ($league) {
+                    DB::commit();
+                    return $league;
+                }
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+        }
     }
 
     /**

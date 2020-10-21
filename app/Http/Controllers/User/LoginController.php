@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use App\Http\Requests\User\LoginRequest;
 use App\Http\Resources\User\LoginResource;
 use App\Http\Service\User\LoginService;
@@ -16,7 +16,7 @@ use App\Models\User;
  * @package App\Http\Controllers\User
  * Created 04/10/2020
  */
-class LoginController extends Controller
+class LoginController extends ApiController
 {
     protected $user;
     private $loginService;
@@ -40,12 +40,11 @@ class LoginController extends Controller
      */
     public function login(LoginRequest $request)
     {
-        $this->user = $this->loginService->login($request->all());
+        $this->user = $this->loginService->login($request->validated());
         if ($this->user) {
-            return response()->json(new LoginResource($this->user));
-        } else {
-            return response()->json(['message' => 'Credenciales inválidas'], 404);
+            return $this->showOne(new LoginResource($this->user));
         }
+        return $this->errorResponse('Credenciales inválidas', 404);
     }
 
     /**
@@ -58,6 +57,6 @@ class LoginController extends Controller
     {
         $user->api_token = null;
         $user->save();
-        return response()->json(null, 200);
+        return $this->noContentResponse();
     }
 }
