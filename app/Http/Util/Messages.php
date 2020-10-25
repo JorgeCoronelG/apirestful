@@ -20,4 +20,5 @@ class Messages
     const METHOD_NOT_ALLOWED_HTTP_EXCEPTION = 'Método no válido.';
     const QUERY_EXCEPTION_1451 = 'No se puede eliminar el recurso porque está relacionado con algún otro.';
     const ERROR_SERVER = 'Ocurrió algo inesperado. Intente mas tarde.';
+    const THROTTLE_REQUESTS_EXCEPTION = 'Muchos intentos realizados.';
 }
