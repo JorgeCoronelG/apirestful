@@ -1,18 +1,20 @@
 <?php
 
-namespace App\Http\Service\League;
+namespace App\Services\League;
 
 use App\Models\League;
 use App\Models\User;
+use App\Util\Messages;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class LeagueService
  *
  * @author JorgeCoronelG
  * @version 1.0
- * @package App\Http\Service\League
+ * @package App\Services\League
  * Created 03/10/2020
  */
 class LeagueService
@@ -44,7 +46,26 @@ class LeagueService
             }
         } catch (\Exception $e) {
             DB::rollBack();
+            abort(Response::HTTP_INTERNAL_SERVER_ERROR, Messages::INTERNAL_SERVER_ERROR);
         }
+    }
+
+    /**
+     * Función para actualizar una liga
+     *
+     * @param $data
+     * @param League $league
+     * @return League
+     * @throws \Throwable
+     */
+    public function updateLeague($data, League $league)
+    {
+        $league->name = $data['name'];
+        if (!$league->isDirty()) {
+            abort(Response::HTTP_UNPROCESSABLE_ENTITY, Messages::MODEL_IS_DIRTY);
+        }
+        $league->saveOrFail();
+        return $league;
     }
 
     /**

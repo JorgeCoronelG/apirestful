@@ -1,16 +1,18 @@
 <?php
 
-namespace App\Http\Service\User;
+namespace App\Services\User;
 
 use App\Models\User;
+use App\Util\Messages;
 use Illuminate\Support\Facades\Hash;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class LoginService
  *
  * @author JorgeCoronelG
  * @version 1.0
- * @package App\Http\Service\User
+ * @package App\Services\User
  * Created 04/10/2020
  */
 class LoginService
@@ -19,17 +21,26 @@ class LoginService
      * Función para iniciar sesión
      *
      * @param $data
-     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Query\Builder|object|null
+     * @return mixed|null
      */
     public function login($data)
     {
         $user = $this->checkAccount($data['email'], $data['password']);
-        if ($user) {
-            $user->api_token = User::generarToken(User::TOKEN_LENGTH);
-            $user->save();
-            return $user;
-        }
-        return null;
+        $user->api_token = User::generarToken(User::TOKEN_LENGTH);
+        $user->saveOrFail();
+        return $user;
+    }
+
+    /**
+     * Función para cerrar sesión
+     *
+     * @param User $user
+     * @throws \Throwable
+     */
+    public function logout(User $user)
+    {
+        $user->api_token = null;
+        $user->saveOrFail();
     }
 
     /**
@@ -37,18 +48,19 @@ class LoginService
      *
      * @param String $email
      * @param String $password
-     * @return mixed|null
+     * @return mixed
      */
     private function checkAccount(String $email, String $password)
     {
         $user = User::findByEmail($email);
         if ($user) {
             if (Hash::check($password, $user->password)) {
-                if ($user->esVerificado()) {
+                if ($user->isVerified()) {
                     return $user;
                 }
+                abort(Response::HTTP_CONFLICT, Messages::USER_NOT_VERIFIED);
             }
         }
-        return null;
+        abort(Response::HTTP_NOT_FOUND, Messages::CREDENTIALS_INVALID);
     }
 }

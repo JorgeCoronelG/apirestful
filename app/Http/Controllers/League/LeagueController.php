@@ -7,8 +7,9 @@ use App\Http\Requests\League\StoreLeagueRequest;
 use App\Http\Requests\League\UpdateLeagueRequest;
 use App\Http\Resources\League\LeagueCollection;
 use App\Http\Resources\League\LeagueResource;
-use App\Http\Service\League\LeagueService;
 use App\Models\League;
+use App\Services\League\LeagueService;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class LeagueController
@@ -27,17 +28,18 @@ class LeagueController extends ApiController
      * LeagueController constructor.
      *
      * @param League $league
+     * @param LeagueService $leagueService
      */
-    public function __construct(League $league)
+    public function __construct(League $league, LeagueService $leagueService)
     {
         $this->league = $league;
-        $this->leagueService = new LeagueService();
+        $this->leagueService = $leagueService;
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
@@ -53,7 +55,7 @@ class LeagueController extends ApiController
     public function store(StoreLeagueRequest $request)
     {
         $league = $this->leagueService->storeLeague($request->validated());
-        return $this->showOne(new LeagueResource($league), 201);
+        return $this->showOne(new LeagueResource($league), Response::HTTP_CREATED);
     }
 
     /**
@@ -72,10 +74,12 @@ class LeagueController extends ApiController
      *
      * @param UpdateLeagueRequest $request
      * @param League $league
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Throwable
      */
     public function update(UpdateLeagueRequest $request, League $league)
     {
-        $league->saveOrFail($request->validated());
+        $league = $this->leagueService->updateLeague($request->validated(), $league);
         return $this->showOne(new LeagueResource($league));
     }
 
@@ -83,7 +87,7 @@ class LeagueController extends ApiController
      * Remove the specified resource from storage.
      *
      * @param League $league
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function destroy(League $league)
     {

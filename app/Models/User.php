@@ -41,7 +41,7 @@ class User extends Authenticatable
      *
      * @return bool true / verificado - false / no verificado
      */
-    public function esVerificado()
+    public function isVerified()
     {
         return $this->verified == User::USUARIO_VERIFICADO;
     }
@@ -75,6 +75,16 @@ class User extends Authenticatable
      */
     public static function findByEmail(String $email)
     {
-         return User::where('email', $email)->first();
+         return User::where('email', $email)->firstOrFail();
+    }
+
+    /**
+     * Obtener un usuario por su token de verificación
+     *
+     * @param String $token
+     * @return mixed
+     */
+    public static function findByVerificationToken(String $token) {
+        return User::where('verification_token', $token)->firstOrFail();
     }
 }

@@ -5,8 +5,8 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\User\LoginRequest;
 use App\Http\Resources\User\LoginResource;
-use App\Http\Service\User\LoginService;
 use App\Models\User;
+use App\Services\User\LoginService;
 
 /**
  * Class LoginController
@@ -18,18 +18,16 @@ use App\Models\User;
  */
 class LoginController extends ApiController
 {
-    protected $user;
     private $loginService;
 
     /**
      * LoginController constructor.
      *
-     * @param User $user
+     * @param LoginService $loginService
      */
-    public function __construct(User $user)
+    public function __construct(LoginService $loginService)
     {
-        $this->user = $user;
-        $this->loginService = new LoginService();
+        $this->loginService = $loginService;
     }
 
     /**
@@ -40,23 +38,20 @@ class LoginController extends ApiController
      */
     public function login(LoginRequest $request)
     {
-        $this->user = $this->loginService->login($request->validated());
-        if ($this->user) {
-            return $this->showOne(new LoginResource($this->user));
-        }
-        return $this->errorResponse('Credenciales inválidas', 404);
+        $user = $this->loginService->login($request->validated());
+        return $this->showOne(new LoginResource($user));
     }
 
     /**
      * Función para cerrar sesión y eliminar el api_token del usuario
      *
      * @param User $user
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
+     * @throws \Throwable
      */
     public function logout(User $user)
     {
-        $user->api_token = null;
-        $user->save();
+        $this->loginService->logout($user);
         return $this->noContentResponse();
     }
 }
