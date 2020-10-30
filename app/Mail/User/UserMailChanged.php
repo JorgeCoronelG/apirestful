@@ -41,7 +41,7 @@ class UserMailChanged extends Mailable
     {
         switch ($this->user->role) {
             case User::USUARIO_ADMINISTRADOR:
-                return $this->text('emails.users.email-updated')
+                return $this->markdown('emails.users.email-updated')
                     ->with([
                         'name' => $this->user->league->name,
                         'verification_token' => $this->user->verification_token

@@ -40,7 +40,7 @@ class UserCreated extends Mailable
     {
         switch ($this->user->role) {
             case User::USUARIO_ADMINISTRADOR:
-                return $this->text('emails.users.created',)
+                return $this->markdown('emails.users.created',)
                     ->with([
                         'name' => $this->user->league->name,
                         'verification_token' => $this->user->verification_token

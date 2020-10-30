@@ -36,13 +36,13 @@ class ResetPassword extends Mailable
     {
         switch ($this->user->role) {
             case User::USUARIO_SUPER_ADMINISTRADOR:
-                return $this->text('emails.users.reset-password')
+                return $this->markdown('emails.users.reset-password')
                     ->with([
                         'name' => $this->user->email,
                         'new_password' => $this->newPassword
                     ])->subject(Messages::CONFIRM_EMAIL);
             case User::USUARIO_ADMINISTRADOR:
-                return $this->text('emails.users.reset-password')
+                return $this->markdown('emails.users.reset-password')
                     ->with([
                         'name' => $this->user->league->name,
                         'new_password' => $this->newPassword
