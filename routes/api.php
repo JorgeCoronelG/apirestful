@@ -17,6 +17,7 @@ Route::middleware('auth:api')->prefix('v1/app')->group(function () {
     Route::get('/users/{user}/resend', [UserController::class, 'resend'])->name('resend');
     Route::get('/users/{user}/logout', [LoginController::class, 'logout'])->name('logout');
     Route::patch('/users/{user}/change-email', [UserController::class, 'updateEmail'])->name('update.email');
+    Route::patch('/users/{user}/change-password', [UserController::class, 'updatePassword'])->name('update.password');
 
     // Leagues
     Route::apiResource('leagues',LeagueController::class);

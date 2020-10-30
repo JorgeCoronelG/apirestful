@@ -42,6 +42,19 @@ class UserService
     }
 
     /**
+     * Función para actualizar la contraseña
+     *
+     * @param $data
+     * @param User $user
+     * @throws \Throwable
+     */
+    public function updatePassword($data, User $user)
+    {
+        $user->password = Hash::make($data['password']);
+        $user->saveOrFail();
+    }
+
+    /**
      * Función para reenviar el token de verificación
      *
      * @param User $user
@@ -49,9 +62,6 @@ class UserService
      */
     public function resendToken(User $user)
     {
-        if (!$user->isVerified()) {
-            return abort(Response::HTTP_CONFLICT,Messages::USER_IS_VERIFIED);
-        }
         retry(Constants::TIMES_TO_RESEND_EMAIL, function () use ($user) {
             Mail::to($user)->send(new UserCreated($user));
         }, Constants::SLEEP_TO_RESEND_EMAIL);

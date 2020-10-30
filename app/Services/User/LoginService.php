@@ -59,6 +59,6 @@ class LoginService
             }
             abort(Response::HTTP_CONFLICT, Messages::USER_NOT_VERIFIED);
         }
-        abort(Response::HTTP_NOT_FOUND, Messages::CREDENTIALS_INVALID);
+        abort(Response::HTTP_CONFLICT, Messages::CREDENTIALS_INVALID);
     }
 }
