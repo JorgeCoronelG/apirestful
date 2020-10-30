@@ -53,13 +53,11 @@ class LoginService
     private function checkAccount(String $email, String $password)
     {
         $user = User::findByEmail($email);
-        if ($user) {
-            if (Hash::check($password, $user->password)) {
-                if ($user->isVerified()) {
-                    return $user;
-                }
-                abort(Response::HTTP_CONFLICT, Messages::USER_NOT_VERIFIED);
+        if (Hash::check($password, $user->password)) {
+            if ($user->isVerified()) {
+                return $user;
             }
+            abort(Response::HTTP_CONFLICT, Messages::USER_NOT_VERIFIED);
         }
         abort(Response::HTTP_NOT_FOUND, Messages::CREDENTIALS_INVALID);
     }

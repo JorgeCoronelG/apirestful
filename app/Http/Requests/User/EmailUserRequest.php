@@ -5,14 +5,14 @@ namespace App\Http\Requests\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Class LoginRequest
+ * Class EmailUserRequest
  *
  * @author JorgeCoronelG
  * @version 1.0
  * @package App\Http\Requests\User
  * Created 29/10/2020
  */
-class LoginRequest extends FormRequest
+class EmailUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -32,8 +32,7 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email|max:120',
-            'password' => 'required|min:8|max:35'
+            'email' => 'required|email|max:120'
         ];
     }
 }

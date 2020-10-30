@@ -8,28 +8,23 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-/**
- * Class UserMailChanged
- *
- * @author JorgeCoronelG
- * @version 1.0
- * @package App\Mail\User
- * Created 24/10/2020
- */
-class UserMailChanged extends Mailable
+class ResetPassword extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $user;
+    public $newPassword;
 
     /**
-     * UserMailChanged constructor.
+     * ResetPassword constructor.
      *
      * @param User $user
+     * @param String $newPassword
      */
-    public function __construct(User $user)
+    public function __construct(User $user, String $newPassword)
     {
         $this->user = $user;
+        $this->newPassword = $newPassword;
     }
 
     /**
@@ -40,12 +35,18 @@ class UserMailChanged extends Mailable
     public function build()
     {
         switch ($this->user->role) {
+            case User::USUARIO_SUPER_ADMINISTRADOR:
+                return $this->text('emails.users.reset-password')
+                    ->with([
+                        'name' => $this->user->email,
+                        'new_password' => $this->newPassword
+                    ])->subject(Messages::CONFIRM_EMAIL);
             case User::USUARIO_ADMINISTRADOR:
-                return $this->text('emails.users.email-updated')
+                return $this->text('emails.users.reset-password')
                     ->with([
                         'name' => $this->user->league->name,
-                        'verification_token' => $this->user->verification_token
-                    ])->subject(Messages::EMAIL_UPDATED);
+                        'new_password' => $this->newPassword
+                    ])->subject(Messages::CONFIRM_EMAIL);
             case User::USUARIO_RESPONSABLE_EQUIPO:
                 // Pendiente
             case User::USUARIO_JUGADOR:

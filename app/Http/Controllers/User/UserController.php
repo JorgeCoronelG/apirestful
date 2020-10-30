@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\ApiController;
+use App\Http\Requests\User\EmailUserRequest;
 use App\Http\Requests\User\UpdateEmailUserRequest;
 use App\Models\User;
 use App\Services\User\UserService;
@@ -30,15 +31,29 @@ class UserController extends ApiController
     }
 
     /**
-     * Método para actualizar el email del usuario
+     * Función para actualizar el email del usuario
      *
      * @param UpdateEmailUserRequest $request
      * @param User $user
      * @return \Illuminate\Http\Response
+     * @throws \Throwable
      */
     public function updateEmail(UpdateEmailUserRequest $request, User $user)
     {
         $this->userService->updateEmail($request->validated(), $user);
+        return $this->noContentResponse();
+    }
+
+    /**
+     * Función para reestablecer la contraseña
+     *
+     * @param EmailUserRequest $request
+     * @return \Illuminate\Http\Response
+     * @throws \Exception
+     */
+    public function resetPassword(EmailUserRequest $request)
+    {
+        $this->userService->resetPassword($request->validated());
         return $this->noContentResponse();
     }
 

@@ -45,16 +45,12 @@ class UserCreated extends Mailable
                         'name' => $this->user->league->name,
                         'verification_token' => $this->user->verification_token
                     ])->subject(Messages::CONFIRM_EMAIL);
-                break;
             case User::USUARIO_RESPONSABLE_EQUIPO:
                 // Pendiente
-                break;
             case User::USUARIO_JUGADOR:
                 // Pendiente
-                break;
             case User::USUARIO_ARBITRO:
                 // Pendiente
-                break;
         }
     }
 }

@@ -2,11 +2,14 @@
 
 namespace App\Services\User;
 
+use App\Mail\User\ResetPassword;
 use App\Mail\User\UserCreated;
 use App\Models\User;
 use App\Util\Constants;
 use App\Util\Messages;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -46,11 +49,31 @@ class UserService
      */
     public function resendToken(User $user)
     {
-        if ($user->isVerified()) {
+        if (!$user->isVerified()) {
             return abort(Response::HTTP_CONFLICT,Messages::USER_IS_VERIFIED);
         }
         retry(Constants::TIMES_TO_RESEND_EMAIL, function () use ($user) {
             Mail::to($user)->send(new UserCreated($user));
+        }, Constants::SLEEP_TO_RESEND_EMAIL);
+    }
+
+    /**
+     * Función para enviar la nueva contraseña
+     *
+     * @param $data
+     * @throws \Exception
+     */
+    public function resetPassword($data)
+    {
+        $user = User::findByEmail($data['email']);
+        if (!$user->isVerified()) {
+            abort(Response::HTTP_CONFLICT, Messages::USER_NOT_VERIFIED);
+        }
+        $newPassword = Str::random();
+        $user->password = Hash::make($newPassword);
+        $user->saveOrFail();
+        retry(Constants::TIMES_TO_RESEND_EMAIL, function () use ($user, $newPassword) {
+            Mail::to($user)->send(new ResetPassword($user, $newPassword));
         }, Constants::SLEEP_TO_RESEND_EMAIL);
     }
 

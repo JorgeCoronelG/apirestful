@@ -9,13 +9,14 @@ Route::prefix('v1')->group(function () {
     // Users
     Route::post('/login', [LoginController::class, 'login'])->name('login');
     Route::get('/users/verify/{token}', [UserController::class, 'verify'])->name('verify');
+    Route::post('/users/reset-password', [UserController::class, 'resetPassword'])->name('reset.password');
 });
 
 Route::middleware('auth:api')->prefix('v1/app')->group(function () {
     // Users
-    Route::post('/users/{user}/change-email', [UserController::class, 'updateEmail'])->name('update.email');
     Route::get('/users/{user}/resend', [UserController::class, 'resend'])->name('resend');
     Route::get('/users/{user}/logout', [LoginController::class, 'logout'])->name('logout');
+    Route::patch('/users/{user}/change-email', [UserController::class, 'updateEmail'])->name('update.email');
 
     // Leagues
     Route::apiResource('leagues',LeagueController::class);
