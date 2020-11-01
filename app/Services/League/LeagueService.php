@@ -5,6 +5,7 @@ namespace App\Services\League;
 use App\Models\League;
 use App\Models\User;
 use App\Util\Messages;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,6 +20,28 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class LeagueService
 {
+    // Default value pagination
+    private $pagination = 5;
+
+    /**
+     * Función para mostrar los registros
+     *
+     * @param Request $request
+     * @return mixed
+     */
+    public function findALl(Request $request)
+    {
+        $name = $request->get('name');
+        $email = $request->get('email');
+        if ($request->get('per_page')) $this->pagination = $request->get('per_page');
+        return League::latest('id')
+            ->name($name)
+            ->whereHas('user', function ($query) use ($email) {
+                $query->where('email', 'LIKE', "%$email%");
+            })
+            ->paginate($this->pagination);
+    }
+
     /**
      * Función para insertar una liga con su usuario
      *

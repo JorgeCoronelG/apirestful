@@ -34,4 +34,16 @@ class League extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Scope Query Name
+     *
+     * @param $query
+     * @param $name
+     * @return mixed
+     */
+    public function scopeName($query, $name)
+    {
+        if (isset($name) && trim($name) !== '') return $query->where('name', 'LIKE', "%$name%");
+    }
 }

@@ -9,6 +9,7 @@ use App\Http\Resources\League\LeagueCollection;
 use App\Http\Resources\League\LeagueResource;
 use App\Models\League;
 use App\Services\League\LeagueService;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -21,29 +22,28 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class LeagueController extends ApiController
 {
-    protected $league;
     private $leagueService;
 
     /**
      * LeagueController constructor.
      *
-     * @param League $league
      * @param LeagueService $leagueService
      */
-    public function __construct(League $league, LeagueService $leagueService)
+    public function __construct(LeagueService $leagueService)
     {
-        $this->league = $league;
         $this->leagueService = $leagueService;
     }
 
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        return $this->showAll(new LeagueCollection($this->league->get()));
+        $leagues = $this->leagueService->findALl($request);
+        return $this->showAll(new LeagueCollection($leagues));
     }
 
     /**

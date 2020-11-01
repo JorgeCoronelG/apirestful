@@ -26,6 +26,7 @@ class LeagueResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'user_id' => $this->user_id,
             'user' => UserResource::make($this->user)
         ];
     }
