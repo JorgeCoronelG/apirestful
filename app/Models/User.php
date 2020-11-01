@@ -87,4 +87,28 @@ class User extends Authenticatable
     public static function findByVerificationToken(String $token) {
         return User::where('verification_token', $token)->firstOrFail();
     }
+
+    /**
+     * Scope Query Email
+     *
+     * @param $query
+     * @param $email
+     * @return mixed
+     */
+    public function scopeEmail($query, $email)
+    {
+        if (isset($email) && trim($email) !== '') return $query->where('name', 'LIKE', "%$email%");
+    }
+
+    /**
+     * Scope Query Role
+     *
+     * @param $query
+     * @param $role
+     * @return mixed
+     */
+    public function scopeRole($query, $role)
+    {
+        if (isset($role)) return $query->where('role', $role);
+    }
 }

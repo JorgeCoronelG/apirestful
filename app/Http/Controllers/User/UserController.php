@@ -6,6 +6,7 @@ use App\Http\Controllers\ApiController;
 use App\Http\Requests\User\EmailUserRequest;
 use App\Http\Requests\User\UpdateEmailUserRequest;
 use App\Http\Requests\User\UpdatePasswordUserRequest;
+use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use App\Services\User\UserService;
 
@@ -36,13 +37,13 @@ class UserController extends ApiController
      *
      * @param UpdateEmailUserRequest $request
      * @param User $user
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Throwable
      */
     public function updateEmail(UpdateEmailUserRequest $request, User $user)
     {
-        $this->userService->updateEmail($request->validated(), $user);
-        return $this->noContentResponse();
+        $user = $this->userService->updateEmail($request->validated(), $user);
+        return $this->showOne(new UserResource($user));
     }
 
     /**

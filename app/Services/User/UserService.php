@@ -27,6 +27,7 @@ class UserService
      *
      * @param $data
      * @param User $user
+     * @return User
      * @throws \Throwable
      */
     public function updateEmail($data, User $user)
@@ -39,6 +40,7 @@ class UserService
         $user->verification_token = User::generarToken(User::TOKEN_LENGTH);
         $user->email_verified_at = null;
         $user->saveOrFail();
+        return $user;
     }
 
     /**
@@ -77,7 +79,7 @@ class UserService
     {
         $user = User::findByEmail($data['email']);
         if (!$user->isVerified()) {
-            abort(Response::HTTP_CONFLICT, Messages::USER_NOT_VERIFIED);
+            abort(Response::HTTP_UNPROCESSABLE_ENTITY, Messages::USER_NOT_VERIFIED);
         }
         $newPassword = Str::random();
         $user->password = Hash::make($newPassword);
