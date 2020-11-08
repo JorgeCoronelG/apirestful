@@ -4,6 +4,7 @@ namespace App\Services\League;
 
 use App\Models\League;
 use App\Models\User;
+use App\Util\Constants;
 use App\Util\Messages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,9 +21,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class LeagueService
 {
-    // Default value pagination
-    private $pagination = 5;
-
     /**
      * Función para mostrar los registros
      *
@@ -31,15 +29,21 @@ class LeagueService
      */
     public function findALl(Request $request)
     {
-        $name = $request->get('name');
-        $email = $request->get('email');
-        if ($request->get('per_page')) $this->pagination = $request->get('per_page');
-        return League::latest('id')
-            ->name($name)
-            ->whereHas('user', function ($query) use ($email) {
-                $query->where('email', 'LIKE', "%$email%");
+        $paramsLeague['name'] = $request->get('name');
+        $paramsUser['email'] = $request->get('email');
+        $pagination = Constants::PAGINATION_DEFAULT;
+        if ($request->get(Constants::PAGINATION_KEY)) {
+            $pagination = intval($request->get(Constants::PAGINATION_KEY));
+        }
+        $sort = $request->get(Constants::ORDER_BY_KEY);
+        return League::filter($paramsLeague)
+            ->applySort($sort)
+            ->whereHas('user', function ($query) use ($paramsUser, $sort) {
+                $query->filter($paramsUser)
+                    ->applySort($sort);
             })
-            ->paginate($this->pagination);
+            ->applySortDefault($sort)
+            ->paginate($pagination);
     }
 
     /**

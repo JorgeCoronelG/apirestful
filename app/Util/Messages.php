@@ -12,7 +12,7 @@ namespace App\Util;
  */
 class Messages
 {
-    // Mensajes generales
+    // Mensajes de validaciones
     const MODEL_IS_DIRTY = 'Se debe especificar al menos un valor diferente para actualizar.';
     const CREDENTIALS_INVALID = 'Credenciales inválidas.';
     const USER_IS_VERIFIED = 'El usuario ya fue verificado.';
@@ -31,4 +31,13 @@ class Messages
     // Mensajes de asunto de correo electrónico
     const CONFIRM_EMAIL = 'Confirma tu correo electrónico';
     const EMAIL_UPDATED = 'Confirma tu nuevo correo electrónico';
+
+    /**
+     * @param String $class
+     * @return string message
+     */
+    public static function getMessageHasNotAllowedSorts(String $class)
+    {
+        return "Establezca la propiedad pública allowedSorts dentro de $class";
+    }
 }

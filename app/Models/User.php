@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasSorts;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -18,7 +20,9 @@ use Illuminate\Support\Str;
  */
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasFactory, Notifiable, SoftDeletes, HasSorts;
+
+    public $allowedSorts = ['email', 'role'];
 
     const USUARIO_VERIFICADO = true;
     const USUARIO_NO_VERIFICADO = false;
@@ -89,26 +93,20 @@ class User extends Authenticatable
     }
 
     /**
-     * Scope Query Email
-     *
-     * @param $query
-     * @param $email
-     * @return mixed
+     * @param Builder $query
+     * @param array $params
+     * @return Builder
      */
-    public function scopeEmail($query, $email)
+    public function scopeFilter(Builder $query, array $params)
     {
-        if (isset($email) && trim($email) !== '') return $query->where('name', 'LIKE', "%$email%");
-    }
+        if (isset($params['email']) && trim($params['email']) !== '')
+        {
+            $query->where('email', 'LIKE', '%'.$params['email'].'%');
+        }
 
-    /**
-     * Scope Query Role
-     *
-     * @param $query
-     * @param $role
-     * @return mixed
-     */
-    public function scopeRole($query, $role)
-    {
-        if (isset($role)) return $query->where('role', $role);
+        if (isset($params['role']))
+        {
+            $query->where('role', $params['role']);
+        }
     }
 }

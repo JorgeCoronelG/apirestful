@@ -12,6 +12,15 @@ namespace App\Util;
  */
 class Constants
 {
+    // ORDER BY
+    const ORDER_BY_KEY = 'sort';
+    const ORDER_BY_DESC = 'DESC';
+    const ORDER_BY_ASC = 'ASC';
+
+    // Pagination
+    const PAGINATION_KEY = 'per_page';
+    const PAGINATION_DEFAULT = 5;
+
     // Times something is executed
     const TIMES_TO_RESEND_EMAIL = 5;
 

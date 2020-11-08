@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasSorts;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -16,7 +18,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class League extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasSorts;
+
+    public $allowedSorts = ['name'];
 
     /**
      * The attributes that are mass assignable.
@@ -36,14 +40,14 @@ class League extends Model
     }
 
     /**
-     * Scope Query Name
-     *
-     * @param $query
-     * @param $name
-     * @return mixed
+     * @param Builder $query
+     * @param array $params
+     * @return Builder
      */
-    public function scopeName($query, $name)
+    public function scopeFilter(Builder $query, array $params)
     {
-        if (isset($name) && trim($name) !== '') return $query->where('name', 'LIKE', "%$name%");
+        if (isset($params['name']) && trim($params['name']) !== '') {
+            $query->where('name', 'LIKE', '%'.$params['name'].'%');
+        }
     }
 }
