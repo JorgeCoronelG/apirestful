@@ -33,7 +33,9 @@ class LeagueService
         $paramsUser['email'] = $request->get('email');
         $pagination = Constants::PAGINATION_DEFAULT;
         if ($request->get(Constants::PAGINATION_KEY)) {
-            $pagination = intval($request->get(Constants::PAGINATION_KEY));
+            if (intval($request->get(Constants::PAGINATION_KEY)) !== 0) {
+                $pagination = intval($request->get(Constants::PAGINATION_KEY));
+            }
         }
         $sort = $request->get(Constants::ORDER_BY_KEY);
         return League::filter($paramsLeague)
