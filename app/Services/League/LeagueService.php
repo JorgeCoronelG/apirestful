@@ -32,18 +32,13 @@ class LeagueService
     {
         $filterLeague['name'] = $request->get('name');
         $filterUser['email'] = $request->get('email');
-        $pagination = Constants::PAGINATION_DEFAULT;
-        if ($request->get(Constants::PAGINATION_KEY)) {
-            if (intval($request->get(Constants::PAGINATION_KEY)) > 0) {
-                $pagination = intval($request->get(Constants::PAGINATION_KEY));
-            }
-        }
+        $perPage = Util::getPerPage($request);
         $sort = Util::cleanExtraSorts($request->get(Constants::ORDER_BY_KEY));
         return League::select('leagues.*')
             ->filter($filterLeague)
             ->withUser($filterUser)
             ->applySort($sort)
-            ->paginate($pagination);
+            ->paginate($perPage);
     }
 
     /**

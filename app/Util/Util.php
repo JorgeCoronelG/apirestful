@@ -2,6 +2,7 @@
 
 namespace App\Util;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 /**
@@ -40,5 +41,22 @@ class Util
         $cleanSort[$urlSort] = $direction;
 
         return $cleanSort;
+    }
+
+    /**
+     * Función para obtener los registros por página de la petición
+     *
+     * @param Request $request
+     * @return int
+     */
+    public static function getPerPage(Request $request): int
+    {
+        $perPage = Constants::PAGINATION_DEFAULT;
+        if ($request->get(Constants::PAGINATION_KEY)) {
+            if (intval($request->get(Constants::PAGINATION_KEY)) > 0) {
+                $perPage = intval($request->get(Constants::PAGINATION_KEY));
+            }
+        }
+        return $perPage;
     }
 }
