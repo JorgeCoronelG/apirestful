@@ -31,6 +31,7 @@ class LeagueController extends ApiController
      */
     public function __construct(LeagueService $leagueService)
     {
+        $this->middleware('super.administrador')->except(['index']);
         $this->leagueService = $leagueService;
     }
 
