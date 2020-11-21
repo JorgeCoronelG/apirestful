@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\Traits\HasSorts;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -22,7 +21,10 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable, SoftDeletes, HasSorts;
 
-    public $allowedSorts = ['email', 'role'];
+    public $allowedSorts = [
+        'email' => 'email',
+        'role' => 'role'
+    ];
 
     const USUARIO_VERIFICADO = true;
     const USUARIO_NO_VERIFICADO = false;
@@ -53,10 +55,10 @@ class User extends Authenticatable
     /**
      * Función para generar un token
      *
-     * @param Int $length
+     * @param int $length
      * @return string
      */
-    public static function generarToken(Int $length)
+    public static function generarToken(int $length)
     {
         return Str::random($length);
     }
@@ -74,10 +76,10 @@ class User extends Authenticatable
     /**
      * Obtener un usuario por su correo
      *
-     * @param String $email
+     * @param string $email
      * @return mixed
      */
-    public static function findByEmail(String $email)
+    public static function findByEmail(string $email)
     {
          return User::where('email', $email)->firstOrFail();
     }
@@ -85,28 +87,28 @@ class User extends Authenticatable
     /**
      * Obtener un usuario por su token de verificación
      *
-     * @param String $token
+     * @param string $token
      * @return mixed
      */
-    public static function findByVerificationToken(String $token) {
+    public static function findByVerificationToken(string $token) {
         return User::where('verification_token', $token)->firstOrFail();
     }
 
     /**
-     * @param Builder $query
-     * @param array $params
-     * @return Builder
+     * @param $query
+     * @param $params
+     * @return mixed
      */
-    public function scopeFilter(Builder $query, array $params)
+    public function scopeFilter($query, $params)
     {
-        if (isset($params['email']) && trim($params['email']) !== '')
-        {
+        if (isset($params['email']) && trim($params['email']) !== '') {
             $query->where('email', 'LIKE', '%'.$params['email'].'%');
         }
 
-        if (isset($params['role']))
-        {
+        if (isset($params['role'])) {
             $query->where('role', $params['role']);
         }
+
+        return $query;
     }
 }

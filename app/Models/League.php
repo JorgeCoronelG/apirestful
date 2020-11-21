@@ -20,7 +20,10 @@ class League extends Model
 {
     use HasFactory, SoftDeletes, HasSorts;
 
-    public $allowedSorts = ['name'];
+    public $allowedSorts = [
+        'name' => 'name',
+        'email' => 'users.email'
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -44,10 +47,27 @@ class League extends Model
      * @param array $params
      * @return Builder
      */
-    public function scopeFilter(Builder $query, array $params)
+    public function scopeFilter(Builder $query, array $params): Builder
     {
         if (isset($params['name']) && trim($params['name']) !== '') {
             $query->where('name', 'LIKE', '%'.$params['name'].'%');
         }
+
+        return $query;
+    }
+
+    /**
+     * @param Builder $query
+     * @param array $filter
+     * @return Builder
+     */
+    public function scopeWithUser(Builder $query, array $filter): Builder
+    {
+        $query->join('users', 'leagues.user_id', '=', 'users.id')
+            ->whereHas('user', function ($query) use ($filter) {
+                $query->filter($filter);
+            });
+
+        return $query;
     }
 }

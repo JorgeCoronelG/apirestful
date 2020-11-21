@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources\League;
 
-use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -27,7 +26,10 @@ class LeagueResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'user_id' => $this->user_id,
-            'user' => UserResource::make($this->user)
+            'user' => [
+                'id' => $this->user->id,
+                'email' => $this->user->email
+            ]
         ];
     }
 }

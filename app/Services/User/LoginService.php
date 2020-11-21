@@ -20,10 +20,10 @@ class LoginService
     /**
      * Función para iniciar sesión
      *
-     * @param $data
-     * @return mixed|null
+     * @param array $data
+     * @return mixed
      */
-    public function login($data)
+    public function login(array $data)
     {
         $user = $this->checkAccount($data['email'], $data['password']);
         $user->api_token = User::generarToken(User::TOKEN_LENGTH);

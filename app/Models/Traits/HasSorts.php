@@ -5,7 +5,7 @@ namespace App\Models\Traits;
 use App\Util\Constants;
 use App\Util\Messages;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Trait HasSorts
@@ -18,49 +18,28 @@ use Illuminate\Support\Str;
 trait HasSorts
 {
     /**
-     * Método para ordenar un modelo genérico
+     * Functión para odenar por cualquier campo del modelo
      *
      * @param Builder $query
-     * @param $sort
+     * @param array|null $sortField
      */
-    public function scopeApplySort(Builder $query, $sort)
+    public function scopeApplySort(Builder $query, array $sortField = null)
     {
         if (!property_exists($this, 'allowedSorts')) {
-            abort(500, Messages::getMessageHasNotAllowedSorts(get_class($this)));
+            abort(Response::HTTP_INTERNAL_SERVER_ERROR, Messages::getMessageHasNotAllowedSorts(get_class($this)));
         }
 
-        if (is_null($sort)) {
+        if (is_null($sortField)) {
+            $query->orderBy('id', Constants::ORDER_BY_DESC);
             return;
         }
 
-        $sortFields = Str::of($sort)->explode(',');
-
-        foreach ($sortFields as $sortField) {
-            $direction = Constants::ORDER_BY_ASC;
-
-            if (Str::of($sortField)->startsWith('-')) {
-                $direction = Constants::ORDER_BY_DESC;
-                $sortField = Str::of($sortField)->substr(1);
+        foreach ($sortField as $field => $direction) {
+            if (!array_key_exists($field, $this->allowedSorts)) {
+                abort(Response::HTTP_BAD_REQUEST, Messages::INVALID_QUERY_PARAMETER);
             }
 
-            if (collect($this->allowedSorts)->contains($sortField)) {
-                $query->orderBy($sortField, $direction);
-            }
+            $query->orderBy($this->allowedSorts[$field], $direction);
         }
-    }
-
-    /**
-     * Método para ordenar por default un modelo en caso de que no tenga parámetros
-     *
-     * @param Builder $query
-     * @param $sort
-     */
-    public function scopeApplySortDefault(Builder $query, $sort)
-    {
-        if (!is_null($sort)) {
-            return;
-        }
-
-        $query->orderBy('id', Constants::ORDER_BY_DESC);
     }
 }

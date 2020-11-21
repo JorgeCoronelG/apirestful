@@ -25,12 +25,12 @@ class UserService
     /**
      * Función para actualizar el email
      *
-     * @param $data
+     * @param array $data
      * @param User $user
      * @return User
      * @throws \Throwable
      */
-    public function updateEmail($data, User $user)
+    public function updateEmail(array $data, User $user)
     {
         $user->email = $data['email'];
         if (!$user->isDirty()) {
@@ -46,11 +46,11 @@ class UserService
     /**
      * Función para actualizar la contraseña
      *
-     * @param $data
+     * @param array $data
      * @param User $user
      * @throws \Throwable
      */
-    public function updatePassword($data, User $user)
+    public function updatePassword(array $data, User $user)
     {
         $user->password = Hash::make($data['password']);
         $user->saveOrFail();
@@ -72,10 +72,10 @@ class UserService
     /**
      * Función para enviar la nueva contraseña
      *
-     * @param $data
+     * @param array $data
      * @throws \Exception
      */
-    public function resetPassword($data)
+    public function resetPassword(array $data)
     {
         $user = User::findByEmail($data['email']);
         if (!$user->isVerified()) {
@@ -92,9 +92,9 @@ class UserService
     /**
      * Función para verificar el usuario
      *
-     * @param String $token
+     * @param string $token
      */
-    public function verify(String $token)
+    public function verify(string $token)
     {
         $user = User::findByVerificationToken($token);
         $user->verified = User::USUARIO_VERIFICADO;

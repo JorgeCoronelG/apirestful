@@ -17,6 +17,7 @@ class Messages
     const CREDENTIALS_INVALID = 'Credenciales inválidas.';
     const USER_IS_VERIFIED = 'El usuario ya fue verificado.';
     const USER_NOT_VERIFIED = 'Usuario no verificado.';
+    const INVALID_QUERY_PARAMETER = 'Parámetro de consulta inválido.';
 
     // Mensajes de excepciones
     const AUTHENTICATION_EXCEPTION = 'No autenticado.';
@@ -33,10 +34,10 @@ class Messages
     const EMAIL_UPDATED = 'Confirma tu nuevo correo electrónico';
 
     /**
-     * @param String $class
+     * @param string $class
      * @return string message
      */
-    public static function getMessageHasNotAllowedSorts(String $class)
+    public static function getMessageHasNotAllowedSorts(string $class): string
     {
         return "Establezca la propiedad pública allowedSorts dentro de $class";
     }

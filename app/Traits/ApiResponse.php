@@ -11,10 +11,10 @@ trait ApiResponse
      * Función que retorna una respuesta JSON exitosa
      *
      * @param $data
-     * @param $code
+     * @param int $code
      * @return \Illuminate\Http\JsonResponse
      */
-    private function successResponse($data, $code)
+    private function successResponse($data, int $code)
     {
         return response()->json($data, $code);
     }
@@ -22,11 +22,11 @@ trait ApiResponse
     /**
      * Función que retorna una respuesta JSON erronea
      *
-     * @param $message
-     * @param $code
+     * @param string $message
+     * @param int $code
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function errorResponse($message, $code)
+    protected function errorResponse(string $message, int $code)
     {
         return response()->json(['code' => $code, 'error' => $message], $code);
     }
@@ -48,7 +48,7 @@ trait ApiResponse
      * @param int $code
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function showAll(ResourceCollection $collection, $code = 200)
+    protected function showAll(ResourceCollection $collection, int $code = 200)
     {
         return $this->successResponse($collection, $code);
     }
@@ -60,7 +60,7 @@ trait ApiResponse
      * @param int $code
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function showOne(JsonResource $resource, $code = 200)
+    protected function showOne(JsonResource $resource, int $code = 200)
     {
         return $this->successResponse(['data' => $resource], $code);
     }
@@ -68,11 +68,11 @@ trait ApiResponse
     /**
      * Función que retorna un JSON con un mensaje
      *
-     * @param String $message
+     * @param string $message
      * @param int $code
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function showMessage(String $message, $code = 200)
+    protected function showMessage(string $message, int $code = 200)
     {
         return $this->successResponse(['data' => $message], $code);
     }

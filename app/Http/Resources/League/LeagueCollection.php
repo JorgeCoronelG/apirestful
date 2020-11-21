@@ -35,9 +35,11 @@ class LeagueCollection extends ResourceCollection
                 'total' => $this->total(),
                 'current_page' => $this->currentPage(),
                 'from' => $this->firstItem(),
+                'first_page_url' => ($this->onFirstPage()) ? null : $this->url(1),
                 'next_page_url' => $this->nextPageUrl(),
-                'per_page' => $this->count(),
                 'prev_page_url' => $this->previousPageUrl(),
+                'last_page_url' => $this->url($this->lastPage()),
+                'per_page' => $this->count(),
                 'to' => $this->lastItem()
             ]
         ];

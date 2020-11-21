@@ -6,6 +6,7 @@ use App\Models\League;
 use App\Models\User;
 use App\Util\Constants;
 use App\Util\Messages;
+use App\Util\Util;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -29,32 +30,29 @@ class LeagueService
      */
     public function findALl(Request $request)
     {
-        $paramsLeague['name'] = $request->get('name');
-        $paramsUser['email'] = $request->get('email');
+        $filterLeague['name'] = $request->get('name');
+        $filterUser['email'] = $request->get('email');
         $pagination = Constants::PAGINATION_DEFAULT;
         if ($request->get(Constants::PAGINATION_KEY)) {
-            if (intval($request->get(Constants::PAGINATION_KEY)) !== 0) {
+            if (intval($request->get(Constants::PAGINATION_KEY)) > 0) {
                 $pagination = intval($request->get(Constants::PAGINATION_KEY));
             }
         }
-        $sort = $request->get(Constants::ORDER_BY_KEY);
-        return League::filter($paramsLeague)
+        $sort = Util::cleanExtraSorts($request->get(Constants::ORDER_BY_KEY));
+        return League::select('leagues.*')
+            ->filter($filterLeague)
+            ->withUser($filterUser)
             ->applySort($sort)
-            ->whereHas('user', function ($query) use ($paramsUser, $sort) {
-                $query->filter($paramsUser)
-                    ->applySort($sort);
-            })
-            ->applySortDefault($sort)
             ->paginate($pagination);
     }
 
     /**
      * Función para insertar una liga con su usuario
      *
-     * @param $data
+     * @param array $data
      * @return mixed
      */
-    public function storeLeague($data)
+    public function storeLeague(array $data)
     {
         DB::beginTransaction();
         try {
@@ -82,12 +80,12 @@ class LeagueService
     /**
      * Función para actualizar una liga
      *
-     * @param $data
+     * @param array $data
      * @param League $league
      * @return League
      * @throws \Throwable
      */
-    public function updateLeague($data, League $league)
+    public function updateLeague(array $data, League $league)
     {
         $league->name = $data['name'];
         if (!$league->isDirty()) {
