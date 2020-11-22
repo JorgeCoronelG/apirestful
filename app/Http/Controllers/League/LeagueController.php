@@ -8,6 +8,7 @@ use App\Http\Requests\League\UpdateLeagueRequest;
 use App\Http\Resources\League\LeagueCollection;
 use App\Http\Resources\League\LeagueResource;
 use App\Models\League;
+use App\Models\User;
 use App\Services\League\LeagueService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,7 +32,8 @@ class LeagueController extends ApiController
      */
     public function __construct(LeagueService $leagueService)
     {
-        $this->middleware('super.administrador')->except(['index']);
+        $this->middleware('permission:'.User::USUARIO_SUPER_ADMINISTRADOR)
+            ->except(['index']);
         $this->leagueService = $leagueService;
     }
 

@@ -27,6 +27,13 @@ class LoginController extends ApiController
      */
     public function __construct(LoginService $loginService)
     {
+        $this->middleware('permission:'.
+            User::USUARIO_SUPER_ADMINISTRADOR.','.
+            User::USUARIO_ADMINISTRADOR.','.
+            User::USUARIO_RESPONSABLE_EQUIPO.','.
+            User::USUARIO_JUGADOR.','.
+            User::USUARIO_ARBITRO)
+            ->except(['login']);
         $this->loginService = $loginService;
     }
 

@@ -29,6 +29,12 @@ class UserController extends ApiController
      */
     public function __construct(UserService $userService)
     {
+        $this->middleware('permission:'.
+            User::USUARIO_SUPER_ADMINISTRADOR.','.
+            User::USUARIO_ADMINISTRADOR.','.
+            User::USUARIO_RESPONSABLE_EQUIPO.','.
+            User::USUARIO_JUGADOR.','.
+            User::USUARIO_ARBITRO);
         $this->userService = $userService;
     }
 
