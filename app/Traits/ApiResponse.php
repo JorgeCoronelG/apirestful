@@ -22,11 +22,11 @@ trait ApiResponse
     /**
      * Función que retorna una respuesta JSON erronea
      *
-     * @param string $message
+     * @param $message
      * @param int $code
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function errorResponse(string $message, int $code)
+    protected function errorResponse($message, int $code)
     {
         return response()->json(['code' => $code, 'error' => $message], $code);
     }

@@ -43,6 +43,16 @@ class League extends Model
     }
 
     /**
+     * Obtiene las noticias relacionadas a la liga
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function notices()
+    {
+        return $this->hasMany(Notice::class);
+    }
+
+    /**
      * @param Builder $query
      * @param array $params
      * @return Builder

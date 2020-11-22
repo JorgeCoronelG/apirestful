@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\League;
+use App\Models\Notice;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -21,12 +22,15 @@ class DatabaseSeeder extends Seeder
 
         DB::table('users')->truncate();
         DB::table('leagues')->truncate();
+        DB::table('notices')->truncate();
 
         League::flushEventListeners();
         User::flushEventListeners();
+        Notice::flushEventListeners();
 
         $this->call(UserSeeder::class);
         $this->call(UserLeagueSeeder::class);
+        $this->call(NoticeSeeder::class);
 
         Schema::enableForeignKeyConstraints();
     }

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\League\LeagueController;
 use \App\Http\Controllers\User\LoginController;
 use \App\Http\Controllers\User\UserController;
+use \App\Http\Controllers\Notice\NoticeController;
 
 Route::prefix('v1')->group(function () {
     // Users
@@ -21,4 +22,7 @@ Route::middleware('auth:api')->prefix('v1/app')->group(function () {
 
     // Leagues
     Route::apiResource('leagues',LeagueController::class);
+
+    // Notices
+    Route::apiResource('notices', NoticeController::class);
 });
