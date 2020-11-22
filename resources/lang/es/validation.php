@@ -150,6 +150,10 @@ return [
         'email' => 'correo electrónico',
         'password' => 'contraseña',
         'name' => 'nombre',
+        'title' => 'título',
+        'description' => 'descripción',
+        'publish_at' => 'publicado en',
+        'league_id' => 'liga',
     ],
 
 ];
