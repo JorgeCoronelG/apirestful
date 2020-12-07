@@ -59,4 +59,37 @@ class Util
         }
         return $perPage;
     }
+
+    /**
+     * Obtener el filepath de la imagen del usuario
+     *
+     * @param string $photo
+     * @return string
+     */
+    public static function getUserImagePath(string $photo): string
+    {
+        return Constants::PATH_STORAGE.Constants::PATH_USER_IMAGES.$photo;
+    }
+
+    /**
+     * Obtener el filepath del reglamento del torneo
+     *
+     * @param string $rule
+     * @return string
+     */
+    public static function getRuleFilePath(string $rule): string
+    {
+        return Constants::PATH_STORAGE.Constants::PATH_USER_IMAGES.$rule;
+    }
+
+    /**
+     * Obtener el filepath de la constancia del partido
+     *
+     * @param string $game
+     * @return string
+     */
+    public static function getGameFilePath(string $game): string
+    {
+        return Constants::PATH_STORAGE.Constants::PATH_GAME_FILES.$game;
+    }
 }

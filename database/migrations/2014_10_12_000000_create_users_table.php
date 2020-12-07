@@ -23,13 +23,27 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('email', 120)->unique();
+            $table->string('email', 120)
+                ->unique();
             $table->string('password');
-            $table->string('api_token', User::TOKEN_LENGTH)->nullable()->unique()->default(null);
-            $table->tinyInteger('role');
-            $table->boolean('verified')->default(User::USUARIO_NO_VERIFICADO);
-            $table->string('verification_token', User::TOKEN_LENGTH)->nullable();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->string('complete_name', 150);
+            $table->string('phone', 12)
+                ->unique();
+            $table->text('photo');
+            $table->date('birthday');
+            $table->tinyInteger('gender');
+            $table->string('api_token', User::TOKEN_LENGTH)
+                ->nullable()
+                ->unique()
+                ->default(null);
+            $table->boolean('verified')
+                ->default(User::USER_NOT_VERIFIED);
+            $table->string('verification_token', User::TOKEN_LENGTH)
+                ->nullable()
+                ->default(null);
+            $table->timestamp('email_verified_at')
+                ->nullable()
+                ->default(null);
             $table->timestamps();
             $table->softDeletes();
         });

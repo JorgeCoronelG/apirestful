@@ -15,14 +15,15 @@ Route::prefix('v1')->group(function () {
 
 Route::middleware('auth:api')->prefix('v1/app')->group(function () {
     // Users
+    Route::apiResource('users', UserController::class);
     Route::get('/users/{user}/resend', [UserController::class, 'resend'])->name('resend');
     Route::get('/users/{user}/logout', [LoginController::class, 'logout'])->name('logout');
     Route::patch('/users/{user}/change-email', [UserController::class, 'updateEmail'])->name('update.email');
     Route::patch('/users/{user}/change-password', [UserController::class, 'updatePassword'])->name('update.password');
 
     // Leagues
-    Route::apiResource('leagues',LeagueController::class);
+    // Route::apiResource('leagues', LeagueController::class);
 
     // Notices
-    Route::apiResource('notices', NoticeController::class);
+    // Route::apiResource('notices', NoticeController::class);
 });

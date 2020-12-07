@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\League;
 use App\Models\Notice;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -20,17 +21,21 @@ class DatabaseSeeder extends Seeder
     {
         Schema::disableForeignKeyConstraints();
 
+        DB::table('roles')->truncate();
         DB::table('users')->truncate();
-        DB::table('leagues')->truncate();
-        DB::table('notices')->truncate();
+        DB::table('role_user')->truncate();
+        // DB::table('leagues')->truncate();
+        // DB::table('notices')->truncate();
 
-        League::flushEventListeners();
+        Role::flushEventListeners();
         User::flushEventListeners();
-        Notice::flushEventListeners();
+        // League::flushEventListeners();
+        // Notice::flushEventListeners();
 
+        $this->call(RoleSeeder::class);
         $this->call(UserSeeder::class);
-        $this->call(UserLeagueSeeder::class);
-        $this->call(NoticeSeeder::class);
+        // $this->call(UserLeagueSeeder::class);
+        // $this->call(NoticeSeeder::class);
 
         Schema::enableForeignKeyConstraints();
     }

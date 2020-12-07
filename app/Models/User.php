@@ -23,16 +23,17 @@ class User extends Authenticatable
 
     public $allowedSorts = [
         'email' => 'email',
-        'role' => 'role'
+        'complete_name' => 'complete_name',
+        'phone' => 'phone',
+        'birthday' => 'birthday',
+        'gender' => 'gender'
     ];
 
-    const USUARIO_VERIFICADO = true;
-    const USUARIO_NO_VERIFICADO = false;
-    const USUARIO_SUPER_ADMINISTRADOR = 1;
-    const USUARIO_ADMINISTRADOR = 2;
-    const USUARIO_RESPONSABLE_EQUIPO = 3;
-    const USUARIO_JUGADOR = 4;
-    const USUARIO_ARBITRO = 5;
+    const USER_VERIFIED = true;
+    const USER_NOT_VERIFIED = false;
+    const USER_PHOTO_DEFAULT = 'i3M5VBKYnWPB1GYBACNt0IQI8TF9nfIemC7h5oaJ.png';
+    const USER_MALE = 1;
+    const USER_FEMALE = 2;
     const TOKEN_LENGTH = 150;
 
     /**
@@ -40,7 +41,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = ['email', 'password', 'role', 'verification_token'];
+    protected $fillable = ['email', 'password', 'complete_name', 'phone', 'photo', 'birthday', 'gender'];
 
     /**
      * Función que regresa si el usuario está verificado o no
@@ -49,7 +50,7 @@ class User extends Authenticatable
      */
     public function isVerified()
     {
-        return $this->verified == User::USUARIO_VERIFICADO;
+        return $this->verified == User::USER_VERIFIED;
     }
 
     /**
@@ -64,7 +65,17 @@ class User extends Authenticatable
     }
 
     /**
-     * Obtiene la liga relacionada al usuario
+     * Relación muchos a muchos
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class)->withTimestamps();
+    }
+
+    /**
+     * Relación uno a uno
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -104,9 +115,17 @@ class User extends Authenticatable
         if (isset($params['email']) && trim($params['email']) !== '') {
             $query->where('email', 'LIKE', '%'.$params['email'].'%');
         }
-
-        if (isset($params['role'])) {
-            $query->where('role', $params['role']);
+        if (isset($params['complete_name']) && trim($params['complete_name']) !== '') {
+            $query->where('complete_name', 'LIKE', '%'.$params['complete_name'].'%');
+        }
+        if (isset($params['phone']) && trim($params['phone']) !== '') {
+            $query->where('phone', 'LIKE', '%'.$params['phone'].'%');
+        }
+        if (isset($params['birthday']) && trim($params['birthday']) !== '') {
+            $query->where('birthday', $params['birthday']);
+        }
+        if (isset($params['gender']) && trim($params['gender']) !== '') {
+            $query->where('gender', $params['gender']);
         }
 
         return $query;

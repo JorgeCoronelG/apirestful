@@ -30,22 +30,21 @@ class UserFactory extends Factory
      */
     public function definition()
     {
+        $gender = $this->faker->randomElement([User::USER_MALE, User::USER_FEMALE]);
         return [
             'email' => $this->faker->unique()->safeEmail,
             'password' => Hash::make('password'),
-            'role' => $this->faker->randomElement([
-                User::USUARIO_SUPER_ADMINISTRADOR,
-                User::USUARIO_ADMINISTRADOR,
-                User::USUARIO_RESPONSABLE_EQUIPO,
-                User::USUARIO_JUGADOR,
-                User::USUARIO_ARBITRO,
-                ]),
+            'complete_name' => ($gender == User::USER_MALE) ? $this->faker->name('male') : $this->faker->name('female'),
+            'phone' => $this->faker->numerify('###-###-####'),
+            'photo' => User::USER_PHOTO_DEFAULT,
+            'birthday' =>$this->faker->date('Y-m-d'),
+            'gender' => $gender,
             'verified' => $verificado = $this->faker->randomElement([
-                User::USUARIO_VERIFICADO,
-                User::USUARIO_NO_VERIFICADO,
+                User::USER_VERIFIED,
+                User::USER_NOT_VERIFIED,
                 ]),
-            'verification_token' => $verificado == User::USUARIO_VERIFICADO ? null : User::generarToken(User::TOKEN_LENGTH),
-            'email_verified_at' => $verificado == User::USUARIO_VERIFICADO ? now() : null,
+            'verification_token' => $verificado == User::USER_VERIFIED ? null : User::generarToken(User::TOKEN_LENGTH),
+            'email_verified_at' => $verificado == User::USER_VERIFIED ? now() : null,
         ];
     }
 }

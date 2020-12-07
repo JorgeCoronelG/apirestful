@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Role;
 use Closure;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
@@ -34,13 +35,19 @@ class PermissionMiddleware
             throw new AuthenticationException();
         }
         if (!is_array($roles)) {
-            if (Auth::user()->role == $roles) {
-                return $next($request);
+            foreach (Auth::user()->roles as $rol) {
+                $rol = Role::find($rol);
+                if ($rol->name === $roles) {
+                    return $next($request);
+                }
             }
         } else {
-            foreach ($roles as $rol) {
-                if (Auth::user()->role == $rol) {
-                    return $next($request);
+            foreach ($roles as $role) {
+                foreach (Auth::user()->roles as $rol) {
+                    $rol = Role::find($rol);
+                    if ($rol->name === $role) {
+                        return $next($request);
+                    }
                 }
             }
         }
