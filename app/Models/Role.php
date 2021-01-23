@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Role
@@ -16,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Role extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -27,7 +26,7 @@ class Role extends Model
 
     const ROLE_ADMINISTRADOR = 'Administrador';
     const ROLE_LIGA = 'Liga de fútbol';
-    const ROLE_RESPONSABLE_EQUIPO = 'Responsable de Equipo';
+    const ROLE_RESPONSABLE_EQUIPO = 'Responsable de equipo';
     const ROLE_JUGADOR = 'Jugador';
     const ROLE_ARBITRO = 'Árbitro';
 

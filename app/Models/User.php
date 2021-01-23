@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasSorts;
+use App\Models\Traits\HasSort;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -19,7 +19,7 @@ use Illuminate\Support\Str;
  */
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, SoftDeletes, HasSorts;
+    use HasFactory, Notifiable, HasSort;
 
     public $allowedSorts = [
         'email' => 'email',
@@ -44,8 +44,6 @@ class User extends Authenticatable
     protected $fillable = ['email', 'password', 'complete_name', 'phone', 'photo', 'birthday', 'gender'];
 
     /**
-     * Función que regresa si el usuario está verificado o no
-     *
      * @return bool true / verificado - false / no verificado
      */
     public function isVerified()
@@ -54,12 +52,10 @@ class User extends Authenticatable
     }
 
     /**
-     * Función para generar un token
-     *
      * @param int $length
      * @return string
      */
-    public static function generarToken(int $length)
+    public static function generateToken(int $length)
     {
         return Str::random($length);
     }
@@ -106,11 +102,11 @@ class User extends Authenticatable
     }
 
     /**
-     * @param $query
-     * @param $params
+     * @param Builder $query
+     * @param array $params
      * @return mixed
      */
-    public function scopeFilter($query, $params)
+    public function scopeFilter(Builder $query, array $params)
     {
         if (isset($params['email']) && trim($params['email']) !== '') {
             $query->where('email', 'LIKE', '%'.$params['email'].'%');

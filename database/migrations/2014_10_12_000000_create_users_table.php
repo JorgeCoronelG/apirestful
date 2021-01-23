@@ -27,8 +27,7 @@ class CreateUsersTable extends Migration
                 ->unique();
             $table->string('password');
             $table->string('complete_name', 150);
-            $table->string('phone', 12)
-                ->unique();
+            $table->string('phone', 12);
             $table->text('photo');
             $table->date('birthday');
             $table->tinyInteger('gender');
@@ -45,7 +44,6 @@ class CreateUsersTable extends Migration
                 ->nullable()
                 ->default(null);
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
