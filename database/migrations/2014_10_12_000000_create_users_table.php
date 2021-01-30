@@ -31,15 +31,14 @@ class CreateUsersTable extends Migration
             $table->text('photo');
             $table->date('birthday');
             $table->tinyInteger('gender');
-            $table->string('api_token', User::TOKEN_LENGTH)
+            $table->string('api_token', User::API_TOKEN_LENGTH)
                 ->nullable()
                 ->unique()
                 ->default(null);
             $table->boolean('verified')
                 ->default(User::USER_NOT_VERIFIED);
-            $table->string('verification_token', User::TOKEN_LENGTH)
-                ->nullable()
-                ->default(null);
+            $table->string('verification_token', User::VERIFICATION_TOKEN_LENGTH)
+                ->nullable();
             $table->timestamp('email_verified_at')
                 ->nullable()
                 ->default(null);
