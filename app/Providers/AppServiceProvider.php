@@ -29,7 +29,5 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
-        League::observe(LeagueObserver::class);
-        User::observe(UserObserver::class);
     }
 }

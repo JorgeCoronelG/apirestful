@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use App\Util\Constants;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 
@@ -34,16 +35,20 @@ class UserFactory extends Factory
         return [
             'email' => $this->faker->unique()->safeEmail,
             'password' => Hash::make('password'),
-            'complete_name' => ($gender == User::USER_MALE) ? $this->faker->name('male') : $this->faker->name('female'),
-            'phone' => $this->faker->numerify('###-###-####'),
+            'complete_name' => ($gender == User::USER_MALE)
+                ? $this->faker->name(Constants::MALE_NAME_KEY)
+                : $this->faker->name(Constants::FEMALE_NAME_KEY),
+            'phone' => $this->faker->numerify(Constants::FORMAT_PHONE),
             'photo' => User::USER_PHOTO_DEFAULT,
-            'birthday' =>$this->faker->date('Y-m-d'),
+            'birthday' =>$this->faker->date(Constants::FORMAT_DATE_YMD),
             'gender' => $gender,
             'verified' => $verificado = $this->faker->randomElement([
                 User::USER_VERIFIED,
                 User::USER_NOT_VERIFIED,
                 ]),
-            'verification_token' => $verificado == User::USER_VERIFIED ? null : User::generarToken(User::TOKEN_LENGTH),
+            'verification_token' => ($verificado == User::USER_VERIFIED)
+                ? null
+                : User::generateVerificationToken(),
             'email_verified_at' => $verificado == User::USER_VERIFIED ? now() : null,
         ];
     }

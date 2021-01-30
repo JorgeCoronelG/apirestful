@@ -32,8 +32,8 @@ class LeagueController extends ApiController
      */
     public function __construct(LeagueService $leagueService)
     {
-        $this->middleware('permission:'.User::USUARIO_SUPER_ADMINISTRADOR)
-            ->except(['index']);
+        /*$this->middleware('permission:'.User::USUARIO_SUPER_ADMINISTRADOR)
+            ->except(['index']);*/
         $this->leagueService = $leagueService;
     }
 

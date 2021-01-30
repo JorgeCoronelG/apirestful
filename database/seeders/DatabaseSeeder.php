@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\League;
-use App\Models\Notice;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;

@@ -8,20 +8,21 @@ use Illuminate\Database\Eloquent\Builder;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Trait HasSorts
+ * Trait HasSort
  *
  * @author JorgeCoronelG
  * @version 1.0
  * @package App\Models\Traits
  * Created 07/11/2020
  */
-trait HasSorts
+trait HasSort
 {
     /**
      * Functión para odenar por cualquier campo del modelo
      *
      * @param Builder $query
      * @param array|null $sortField
+     * @return Builder
      */
     public function scopeApplySort(Builder $query, array $sortField = null)
     {
@@ -30,8 +31,7 @@ trait HasSorts
         }
 
         if (is_null($sortField)) {
-            $query->orderBy('id', Constants::ORDER_BY_DESC);
-            return;
+            return $query->orderBy('id', Constants::ORDER_BY_DESC);
         }
 
         foreach ($sortField as $field => $direction) {
@@ -41,5 +41,7 @@ trait HasSorts
 
             $query->orderBy($this->allowedSorts[$field], $direction);
         }
+
+        return $query;
     }
 }

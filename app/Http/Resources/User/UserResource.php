@@ -2,6 +2,9 @@
 
 namespace App\Http\Resources\User;
 
+use App\Util\Files;
+use App\Util\Utils;
+use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -22,11 +25,26 @@ class UserResource extends JsonResource
      */
     public function toArray($request)
     {
+        $roles = [];
+        foreach ($this->roles as $role) {
+            $roles[] = [
+                'id' => $role->id,
+                'name' => $role->name
+            ];
+        }
         return [
             'id' => $this->id,
             'email' => $this->email,
-            'role' => $this->role,
+            'complete_name' =>  $this->complete_name,
+            'phone' => $this->phone,
+            'photo' => Files::getUserImagePublicPath($this->photo),
+            'birthday' => $this->birthday,
+            'gender' => $this->gender,
             'verified' => $this->verified,
+            'email_verified_at' => ($this->email_verified_at)
+                ? Carbon::parse($this->email_verified_at)->diffForHumans(null,null,false,2)
+                : null,
+            'roles' => $roles,
         ];
     }
 }

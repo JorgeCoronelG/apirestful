@@ -2,6 +2,7 @@
 
 namespace App\Observers\User;
 
+use App\Mail\User\UserCreated;
 use App\Mail\User\UserMailChanged;
 use App\Models\User;
 use App\Util\Constants;
@@ -20,12 +21,14 @@ class UserObserver
     /**
      * Handle the user "created" event.
      *
-     * @param  \App\Models\User  $user
-     * @return void
+     * @param User $user
+     * @throws \Exception
      */
     public function created(User $user)
     {
-        //
+        /*retry(Constants::TIMES_TO_RESEND_EMAIL, function () use ($user) {
+            Mail::to($user)->send(new UserCreated($user));
+        }, Constants::SLEEP_TO_RESEND_EMAIL);*/
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasSorts;
+use App\Models\Traits\HasSort;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Notice extends Model
 {
-    use HasFactory, SoftDeletes, HasSorts;
+    use HasFactory, SoftDeletes, HasSort;
 
     public $allowedSorts = [
         'title' => 'title',

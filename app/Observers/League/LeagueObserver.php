@@ -2,10 +2,7 @@
 
 namespace App\Observers\League;
 
-use App\Mail\User\UserCreated;
 use App\Models\League;
-use App\Util\Constants;
-use Illuminate\Support\Facades\Mail;
 
 /**
  * Class LeagueObserver
@@ -25,9 +22,9 @@ class LeagueObserver
      */
     public function created(League $league)
     {
-        retry(Constants::TIMES_TO_RESEND_EMAIL, function () use ($league) {
+        /*retry(Constants::TIMES_TO_RESEND_EMAIL, function () use ($league) {
             Mail::to($league->user)->send(new UserCreated($league->user));
-        }, Constants::SLEEP_TO_RESEND_EMAIL);
+        }, Constants::SLEEP_TO_RESEND_EMAIL);*/
     }
 
     /**

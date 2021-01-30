@@ -7,7 +7,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Util\Constants;
 use App\Util\Messages;
-use App\Util\Util;
+use App\Util\Utils;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -33,8 +33,8 @@ class LeagueService
     {
         $filterLeague['name'] = $request->get('name');
         $filterUser['email'] = $request->get('email');
-        $perPage = Util::getPerPage($request);
-        $sort = Util::cleanExtraSorts($request->get(Constants::ORDER_BY_KEY));
+        $perPage = Utils::getPerPage($request);
+        $sort = Utils::cleanExtraSort($request->get(Constants::ORDER_BY_KEY));
         return League::select('leagues.*')
             ->filter($filterLeague)
             ->withUser($filterUser)
@@ -56,7 +56,7 @@ class LeagueService
                 'email' => $data['email'],
                 'password' => Hash::make('password'),
                 'role' => User::USUARIO_ADMINISTRADOR,
-                'verification_token' => User::generarToken(User::TOKEN_LENGTH)
+                'verification_token' => User::generateApiToken(User::TOKEN_LENGTH)
             ]);
             if ($user) {
                 $league = $user->league()->create([

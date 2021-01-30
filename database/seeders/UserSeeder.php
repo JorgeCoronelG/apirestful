@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Hash;
  */
 class UserSeeder extends Seeder
 {
-    const TOTAL_USERS = 1000;
+    const TOTAL_USERS = 50;
 
     /**
      * Run the database seeds.

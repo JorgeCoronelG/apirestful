@@ -1,19 +1,22 @@
 <?php
 
+use App\Http\Controllers\User\LoginController;
+use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
-use \App\Http\Controllers\League\LeagueController;
-use \App\Http\Controllers\User\LoginController;
-use \App\Http\Controllers\User\UserController;
-use \App\Http\Controllers\Notice\NoticeController;
 
-Route::prefix('v1')->group(function () {
+Route::group([
+    'prefix' => 'v1'
+], function () {
     // Users
     Route::post('/login', [LoginController::class, 'login'])->name('login');
     Route::get('/users/verify/{token}', [UserController::class, 'verify'])->name('verify');
     Route::post('/users/reset-password', [UserController::class, 'resetPassword'])->name('reset.password');
 });
 
-Route::middleware('auth:api')->prefix('v1/app')->group(function () {
+Route::group([
+   'prefix' => 'v1',
+    // 'middleware' => ['auth:api']
+], function () {
     // Users
     Route::apiResource('users', UserController::class);
     Route::get('/users/{user}/resend', [UserController::class, 'resend'])->name('resend');

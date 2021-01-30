@@ -5,7 +5,7 @@ namespace App\Services\Notice;
 use App\Models\Notice;
 use App\Util\Constants;
 use App\Util\Messages;
-use App\Util\Util;
+use App\Util\Utils;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -31,8 +31,8 @@ class NoticeService
         $filter['description'] = $request->get('description');
         $filter['publish_at'] = $request->get('publish_at');
         $filter['league'] = $request->get('league');
-        $perPage = Util::getPerPage($request);
-        $sort = Util::cleanExtraSorts($request->get(Constants::ORDER_BY_KEY));
+        $perPage = Utils::getPerPage($request);
+        $sort = Utils::cleanExtraSorts($request->get(Constants::ORDER_BY_KEY));
         return Notice::with('league')
             ->filter($filter)
             ->applySort($sort)

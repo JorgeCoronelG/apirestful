@@ -7,7 +7,7 @@ namespace App\Util;
  *
  * @author JorgeCoronelG
  * @version 1.0
- * @package App\Http\Util
+ * @package App\Http\Utils
  * Created 24/10/2020
  */
 class Messages

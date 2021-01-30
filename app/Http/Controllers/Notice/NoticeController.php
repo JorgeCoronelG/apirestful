@@ -33,10 +33,10 @@ class NoticeController extends ApiController
      */
     public function __construct(Notice $notice, NoticeService $noticeService)
     {
-        $this->middleware('permission:'.
+        /*$this->middleware('permission:'.
             User::USUARIO_SUPER_ADMINISTRADOR.','.
             User::USUARIO_ADMINISTRADOR)
-            ->except(['index']);
+            ->except(['index']);*/
         $this->notice = $notice;
         $this->noticeService = $noticeService;
     }

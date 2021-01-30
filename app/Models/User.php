@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
+use phpDocumentor\Reflection\Types\Boolean;
 
 /**
  * Class User
@@ -34,30 +35,39 @@ class User extends Authenticatable
     const USER_PHOTO_DEFAULT = 'i3M5VBKYnWPB1GYBACNt0IQI8TF9nfIemC7h5oaJ.png';
     const USER_MALE = 1;
     const USER_FEMALE = 2;
-    const TOKEN_LENGTH = 150;
+    const API_TOKEN_LENGTH = 150;
+    const VERIFICATION_TOKEN_LENGTH = 6;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['email', 'password', 'complete_name', 'phone', 'photo', 'birthday', 'gender'];
+    protected $fillable = ['email', 'password', 'complete_name', 'phone',
+                            'photo', 'birthday', 'gender', 'verification_token'];
 
     /**
      * @return bool true / verificado - false / no verificado
      */
-    public function isVerified()
+    public function isVerified(): Boolean
     {
         return $this->verified == User::USER_VERIFIED;
     }
 
     /**
-     * @param int $length
      * @return string
      */
-    public static function generateToken(int $length)
+    public static function generateApiToken(): string
     {
-        return Str::random($length);
+        return Str::random(self::API_TOKEN_LENGTH);
+    }
+
+    /**
+     * @return string
+     */
+    public static function generateVerificationToken(): string
+    {
+        return Str::upper(Str::random(self::VERIFICATION_TOKEN_LENGTH));
     }
 
     /**
