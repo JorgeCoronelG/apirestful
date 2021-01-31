@@ -2,6 +2,12 @@
 
 namespace App\Util;
 
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Intervention\Image\Facades\Image;
+use Symfony\Component\HttpFoundation\Response;
+
 /**
  * Class Files
  *
@@ -13,35 +19,72 @@ namespace App\Util;
 class Files
 {
     /**
-     * Obtener la extensión de una imagen
+     * Método para subir una imagen al servidor
      *
-     * @param string $image
-     * @return string .png .jpg
+     * @param UploadedFile $imageFile
+     * @param string $customPath
+     * @return string
      */
-    public static function getImageExtension(string $image): string
+    public static function uploadImage(UploadedFile $imageFile, string $customPath): string
     {
-        return '.'.pathinfo($image, PATHINFO_EXTENSION);
+        try {
+            $imageName = Str::random(Constants::IMAGE_NAME_LENGHT).
+                self::getFileExtension($imageFile->getClientOriginalName());
+            $pathUrl = self::getFilePublicPath($imageName, $customPath);
+            Image::make($imageFile)
+                ->resize(null, Constants::IMAGE_HEIGHT, function ($constraint) {
+                    $constraint->aspectRatio();
+                })
+                ->save($pathUrl);
+            return $imageName;
+        } catch (\Exception $e) {
+            abort(Response::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
+        }
     }
 
     /**
-     * Obtener el filepath público de la imagen del usuario
+     * Método para eliminar un archivo del servidor
      *
-     * @param string $photo
-     * @return string
+     * @param string $filename
+     * @param string $customPath
      */
-    public static function getUserImagePublicPath(string $photo): string
+    public static function deleteFile(string $filename, string $customPath): void
     {
-        return public_path(Constants::PATH_STORAGE.Constants::PATH_USER_IMAGES.$photo);
+        Storage::delete(Files::getFileStoragePath($filename, $customPath));
     }
 
     /**
-     * Obtener el filepath storage de la imagen del usuario
+     * Obtener la extensión de un archivo
      *
-     * @param string $photo
+     * @param string $file
+     * @return string .png .jpg .pdf .xls
+     */
+    public static function getFileExtension(string $file): string
+    {
+        return '.'.pathinfo($file, PATHINFO_EXTENSION);
+    }
+
+    /**
+     * Obtener el filepath público de un archivo
+     *
+     * @param string $filename
+     * @param string $customPath
      * @return string
      */
-    public static function getUserImageStoragePath(string $photo): string
+    public static function getFilePublicPath(string $filename, string $customPath): string
     {
-        return Constants::PATH_STORAGE_PUBLIC.Constants::PATH_USER_IMAGES.$photo;
+        return public_path(Constants::PATH_STORAGE.$customPath.$filename);
+    }
+
+    /**
+     * Obtener el filepath storage de un archivo
+     *
+     * @param string $filename
+     * @param string $customPath
+     * @return string
+     */
+    public static function getFileStoragePath(string $filename, string $customPath): string
+    {
+        return Constants::PATH_STORAGE_PUBLIC.$customPath.$filename;
     }
 }

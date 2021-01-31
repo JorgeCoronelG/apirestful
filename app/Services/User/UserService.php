@@ -5,6 +5,7 @@ namespace App\Services\User;
 use App\Mail\User\ResetPassword;
 use App\Models\User;
 use App\Notifications\User\UserCreatedNotification;
+use App\Notifications\User\UserMailChangedNotification;
 use App\Util\Constants;
 use App\Util\Files;
 use App\Util\Messages;
@@ -14,9 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Intervention\Image\Facades\Image;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -61,16 +60,7 @@ class UserService
         DB::beginTransaction();
         $photo = null;
         try {
-            if (isset($data['photo'])) {
-                $photo = Str::random(Constants::IMAGE_NAME_LENGHT).
-                    Files::getImageExtension($data['photo']->getClientOriginalName());
-                $pathUrl = Files::getUserImagePublicPath($photo);
-                Image::make($data['photo'])
-                    ->resize(null, Constants::IMAGE_HEIGHT, function ($constraint) {
-                        $constraint->aspectRatio();
-                    })
-                    ->save($pathUrl);
-            }
+            if (isset($data['photo'])) $photo = Files::uploadImage($data['photo'], Constants::PATH_USER_IMAGES);
             $user = User::create([
                 'email' => $data['email'],
                 'password' => Hash::make('password'),
@@ -89,10 +79,56 @@ class UserService
         } catch (\Exception $e) {
             DB::rollBack();
             if (!is_null($photo)) {
-                Storage::delete(Files::getUserImageStoragePath($photo));
+                Files::deleteFile($photo, Constants::PATH_USER_IMAGES);
             }
             abort(Response::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
         }
+    }
+
+    /**
+     * Función para actualizar un usuario
+     *
+     * @param array $data
+     * @param User $user
+     * @return User
+     * @throws \Throwable
+     */
+    public function updateUser(array $data, User $user)
+    {
+        $user->complete_name = $data['complete_name'];
+        $user->phone = $data['phone'];
+        $user->birthday = $data['birthday'];
+        $user->gender = $data['gender'];
+        if (isset($data['photo'])) {
+            $photo = Files::uploadImage($data['photo'], Constants::PATH_USER_IMAGES);
+            Files::deleteFile($user->photo, Constants::PATH_USER_IMAGES);
+            $user->photo = $photo;
+        }
+        if (isset($data['email'])) {
+            $user->email = $data['email'];
+            if ($user->isDirty('email')) {
+                $user->verification_token = User::generateVerificationToken();
+                $user->verified = User::USER_NOT_VERIFIED;
+            }
+        }
+        if (!$user->isDirty()) {
+            abort(Response::HTTP_UNPROCESSABLE_ENTITY, Messages::MODEL_IS_DIRTY);
+        }
+        $user->saveOrFail();
+        if ($user->wasChanged('email')) $user->notify(new UserMailChangedNotification($user));
+        return $user;
+    }
+
+    /**
+     * Función para eliminar un usuario
+     *
+     * @param User $user
+     * @throws \Exception
+     */
+    public function deleteUser(User $user)
+    {
+        Files::deleteFile($user->photo, Constants::PATH_USER_IMAGES);
+        $user->delete();
     }
 
     /**

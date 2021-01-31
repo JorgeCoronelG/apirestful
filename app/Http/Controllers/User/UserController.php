@@ -7,6 +7,7 @@ use App\Http\Requests\User\EmailUserRequest;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateEmailUserRequest;
 use App\Http\Requests\User\UpdatePasswordUserRequest;
+use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Resources\User\UserCollection;
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
@@ -78,6 +79,20 @@ class UserController extends ApiController
     }
 
     /**
+     * Update the specified resource in storage.
+     *
+     * @param UpdateUserRequest $request
+     * @param User $user
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Throwable
+     */
+    public function update(UpdateUserRequest $request, User $user)
+    {
+        $user = $this->userService->updateUser($request->validated(), $user);
+        return $this->showOne(new UserResource($user));
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param User $user
@@ -86,7 +101,7 @@ class UserController extends ApiController
      */
     public function destroy(User $user)
     {
-        $user->delete();
+        $this->userService->deleteUser($user);
         return $this->noContentResponse();
     }
 

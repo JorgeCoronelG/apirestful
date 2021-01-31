@@ -2,10 +2,6 @@
 
 namespace App\Providers;
 
-use App\Models\League;
-use App\Models\User;
-use App\Observers\League\LeagueObserver;
-use App\Observers\User\UserObserver;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 

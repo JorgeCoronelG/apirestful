@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources\User;
 
+use App\Util\Constants;
 use App\Util\Files;
-use App\Util\Utils;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -37,7 +37,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'complete_name' =>  $this->complete_name,
             'phone' => $this->phone,
-            'photo' => Files::getUserImagePublicPath($this->photo),
+            'photo' => Files::getFilePublicPath($this->photo, Constants::PATH_USER_IMAGES),
             'birthday' => $this->birthday,
             'gender' => $this->gender,
             'verified' => $this->verified,

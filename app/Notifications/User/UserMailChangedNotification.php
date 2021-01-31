@@ -9,21 +9,21 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 /**
- * Class UserCreatedNotification
+ * Class UserMailChangedNotification
  *
  * @author JorgeCoronelG
  * @version 1.0
  * @package App\Notifications\User
  * Created 30/01/2021
  */
-class UserCreatedNotification extends Notification
+class UserMailChangedNotification extends Notification
 {
     use Queueable;
 
     private $user;
 
     /**
-     * UserCreatedNotification constructor.
+     * UserMailChangedNotification constructor.
      *
      * @param User $user
      */
@@ -45,13 +45,13 @@ class UserCreatedNotification extends Notification
     /**
      * Get the mail representation of the notification.
      *
-     * @return mixed
+     * @return MailMessage
      */
     public function toMail()
     {
-        return (new MailMessage())
-            ->subject(Messages::CONFIRM_EMAIL)
-            ->markdown('emails.users.created', [
+        return (new MailMessage)
+            ->subject(Messages::EMAIL_UPDATED)
+            ->markdown('emails.users.email-updated', [
                 'name' => $this->user->complete_name,
                 'verification_token' => $this->user->verification_token
             ]);

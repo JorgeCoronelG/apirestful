@@ -54,6 +54,12 @@ class UserSeeder extends Seeder
         ]);
         $administrador->roles()->attach(Role::findByName(Role::ROLE_ADMINISTRADOR)->id);
 
-        User::factory()->times(self::TOTAL_USERS)->create();
+        User::factory()
+            ->times(self::TOTAL_USERS)
+            ->create()
+            ->each(function (User $user) {
+                $role = Role::all()->except(Role::findByName(Role::ROLE_ADMINISTRADOR)->id)->random();
+                $user->roles()->attach($role);
+            });
     }
 }
